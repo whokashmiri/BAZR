@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import ItemCard from '../components/ItemCard';
-import LocationPicker from '../components/LocationPermission';
-import { fetchItems } from '../utils/api';
-import { calculateDistance } from '../utils/distanceCalculator';
+import LocationPicker from '../components/LocationPicker';
+import { fetchAllItems } from '../services/api';
+import { fetchItemsByCategory } from '../services/api';
+import { calculateDistance } from '../services/distanceCalculator';
 import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
@@ -21,8 +22,8 @@ const HomeScreen = () => {
     const delayDebounceFn = setTimeout(() => {
       if (searchQuery) {
         setLoading(true);
-        fetchItems(searchQuery)
-          .then((data) => setItems(data))
+        fetchAllItems(searchQuery)
+          .then((data: React.SetStateAction<any[]>) => setItems(data))
           .finally(() => setLoading(false));
       }
     }, 500);
