@@ -1,4 +1,6 @@
+
 import React, { useState } from 'react';
+
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 const CartScreen = ({ route }) => {
@@ -75,7 +77,8 @@ const CartScreen = ({ route }) => {
               style={styles.deleteButton}
               onPress={() => deleteItem(item.id)}
             >
-              <Text style={styles.deleteButtonText}>Delete</Text>
+               <Text style={styles.deleteButtonText}>Delete</Text>
+               
             </TouchableOpacity>
           </View>
         )}
@@ -116,7 +119,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   quantityButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#FCBF49',
     padding: 8,
     borderRadius: 4,
   },
@@ -130,12 +133,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   deleteButton: {
-    backgroundColor: '#ff4444',
+    backgroundColor: '#F77F00',
     padding: 8,
     borderRadius: 4,
   },
   deleteButtonText: {
-    color: '#fff',
+    color: '#003049',
     fontSize: 14,
     fontWeight: 'bold',
   },

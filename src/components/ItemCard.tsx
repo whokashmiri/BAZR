@@ -11,7 +11,6 @@ const ItemCard = ({ item, onAddToCart }) => {
         <Text style={styles.description}>{item.description}</Text>
         <Text style={styles.price}>${item.price.toFixed(2)}</Text>
       </View>
-     
     </View>
     <View>
        <TouchableOpacity style={styles.addButton} onPress={onAddToCart}>
@@ -46,11 +45,12 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   price: {
+    color:'#D62828',
     fontSize: 16,
     fontWeight: 'bold',
   },
   addButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#F77F00',
     padding: 8,
     borderRadius: 8,
   },

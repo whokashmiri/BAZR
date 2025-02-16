@@ -93,14 +93,14 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: '#F77F00',
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 8,
     marginBottom: 16,
   },
   cartButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#003049',
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
