@@ -1,82 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
-import ItemCard from '../components/ItemCard';
-import LocationPicker from '../components/LocationPicker';
-import { fetchAllItems } from '../services/api';
-import { fetchItemsByCategory } from '../services/api';
-import { calculateDistance } from '../services/distanceCalculator';
-import { useNavigation } from '@react-navigation/native';
+/* eslint-disable quotes */
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 
 const HomeScreen = () => {
-  const [location, setLocation] = useState<string>('Current Location');
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [items, setItems] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [deliveryMessage, setDeliveryMessage] = useState<string>('');
-  const [cartItems, setCartItems] = useState<any[]>([]);
-  const navigation = useNavigation();
-
-  const storeLocation = { latitude: 12.9716, longitude: 77.5946 }; // Example store location
-
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (searchQuery) {
-        setLoading(true);
-        fetchAllItems(searchQuery)
-          .then((data: React.SetStateAction<any[]>) => setItems(data))
-          .finally(() => setLoading(false));
-      }
-    }, 500);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery]);
-
-  useEffect(() => {
-    const userLocation = { latitude: 12.9352, longitude: 77.6245 }; // Example user location
-    const distance = calculateDistance(storeLocation, userLocation);
-    setDeliveryMessage(distance <= 4 ? 'Delivery In 10 minutes' : 'Change location');
-  }, [location]);
-
-  const handleAddToCart = (item: any) => {
-    const existingItem = cartItems.find((cartItem) => cartItem.id === item.id);
-    if (existingItem) {
-      setCartItems((prevItems) =>
-        prevItems.map((cartItem) =>
-          cartItem.id === item.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
-        )
-      );
-    } else {
-      setCartItems((prevItems) => [...prevItems, { ...item, quantity: 1 }]);
-    }
-  };
-
   return (
     <View style={styles.container}>
-      <Text style={styles.deliveryText}>{deliveryMessage}</Text>
-      <LocationPicker location={location} setLocation={setLocation} />
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search for items..."
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-      />
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <FlatList
-          data={items}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <ItemCard item={item} onAddToCart={() => handleAddToCart(item)} />
-          )}
-        />
-      )}
-      <TouchableOpacity
-        style={styles.cartButton}
-        onPress={() => navigation.navigate('Cart', { cartItems })}
-      >
-        <Text style={styles.cartButtonText}>Go to Cart ({cartItems.length})</Text>
-      </TouchableOpacity>
+      <Text style={styles.text}>Welcome to Home Screen!</Text>
     </View>
   );
 };
@@ -84,31 +13,13 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  deliveryText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  searchInput: {
-    height: 40,
-    borderColor: '#F77F00',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    marginBottom: 16,
-  },
-  cartButton: {
-    backgroundColor: '#003049',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 16,
-  },
-  cartButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+  text: {
+    fontSize: 20,
+    fontWeight: "bold",
   },
 });
 
