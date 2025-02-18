@@ -16,22 +16,31 @@ const CartScreen = () => {
     <View style={styles.container}>
       <Text style={styles.header}>Your Cart</Text>
       {cart.length === 0 ? (
-        <Text style={styles.emptyText}>Your cart is empty</Text>
-      ) : (
-        <FlatList
-          data={cart}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.cartItem}>
-              <Image source={{ uri: item.image }} style={styles.productImage} />
-              <View style={styles.productDetails}>
-                <Text style={styles.productName}>{item.name}</Text>
-                <Text style={styles.productPrice}>${item.price}</Text>
-              </View>
-            </View>
-          )}
-        />
-      )}
+  <View style={styles.emptyCartContainer}>
+    <Text style={styles.emptyText}>Your cart is empty</Text>
+    <TouchableOpacity 
+      style={styles.goBackButton} 
+      onPress={() => navigation.goBack()}
+    >
+      <Text style={styles.goBackText}>Go back to shopping</Text>
+    </TouchableOpacity>
+  </View>
+) : (
+  <FlatList
+    data={cart}
+    keyExtractor={(item, index) => index.toString()}
+    renderItem={({ item }) => (
+      <View style={styles.cartItem}>
+        <Image source={{ uri: item.image }} style={styles.productImage} />
+        <View style={styles.productDetails}>
+          <Text style={styles.productName}>{item.name}</Text>
+          <Text style={styles.productPrice}>${item.price}</Text>
+        </View>
+      </View>
+    )}
+  />
+)}
+
       <Text style={styles.totalText}>Total: ${calculateTotal()}</Text>
       <TouchableOpacity style={styles.checkoutButton}>
         <Text style={styles.checkoutText}>Proceed to Checkout</Text>

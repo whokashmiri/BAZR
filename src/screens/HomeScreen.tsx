@@ -1,8 +1,11 @@
+
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Modal, ScrollView } from "react-native";
 import { searchProducts } from '../utils/searchData';
 import { categories } from '../utils/dummyData';
 import { useNavigation } from "@react-navigation/native";
+import CartScreen from "./CartScreen";
+
 
 const HomeScreen = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -10,6 +13,8 @@ const HomeScreen = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [cart, setCart] = useState([]);
   const navigation = useNavigation();
+
+  
 
   const handleSearch = (term) => {
     setSearchTerm(term);
@@ -107,9 +112,13 @@ const HomeScreen = () => {
       </ScrollView>
 
       {/* Floating Cart Button */}
-      <TouchableOpacity style={styles.cartButton} onPress={() => navigation.navigate('CartScreen', { cart })}>
-        <Text style={styles.cartText}>Cart ({cart.length})</Text>
-      </TouchableOpacity>
+      <TouchableOpacity
+  style={styles.cartButton}
+  onPress={() => navigation.navigate('CartScreen', { cart })}
+>
+  <Text style={styles.cartText}>Cart ({cart.length})</Text>
+</TouchableOpacity>
+
     </View>
   );
 };
@@ -223,7 +232,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   categoryCard: {
-    width: 120,
+    width: 160,
     height: 140,
     backgroundColor: 'white',
     marginRight: 10,
@@ -256,3 +265,6 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
+
+
+
