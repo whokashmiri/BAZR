@@ -3,8 +3,11 @@ import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Modal, Scro
 import { searchProducts } from '../utils/searchData';
 import { categories } from '../utils/dummyData';
 import { adData } from '../utils/dummyData';
+import BestSellerCard from '../components/BestSellersCard';
 
-import CarouselComponent from "../components/CarouselComponent";
+
+
+
 
 const HomeScreen = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -64,6 +67,7 @@ const HomeScreen = () => {
   const getTotalPrice = () => cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
 
   return (
+    <ScrollView>
     <View style={styles.container}>
       <View style={styles.delivery}>
         <View style={styles.deliverySection}>
@@ -183,8 +187,9 @@ const HomeScreen = () => {
         </View>
       </Modal>
 
-      {/* <CarouselComponent/> */}
+    <BestSellerCard/>
     </View>
+    </ScrollView>
   );
 };
 
@@ -224,7 +229,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   productsContainer: {
-    marginLeft:15,
+    marginLeft:20,
     backgroundColor:"#2FB4B9",
     width:'100%',
     borderRadius:10,
@@ -331,12 +336,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   carouselContainer: {
-    marginTop: 10,
+   
+   
   },
   carouselContainerr: {
-
-     marginTop:-370,
-    position:'relative',
+    marginTop:20,
+    height:250,
+    width:"100%"
   },
   cartButton: {
     position: 'absolute',

@@ -1,3 +1,5 @@
+/* eslint-disable comma-dangle */
+/* eslint-disable no-trailing-spaces */
 /* eslint-disable quotes */
 export const searchProducts = [
     {
@@ -272,3 +274,9 @@ export const searchProducts = [
         "price": 3.0
     }
 ]
+
+
+export const bestSellers = [
+    
+]
+
