@@ -1,20 +1,17 @@
-
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Modal, ScrollView } from "react-native";
 import { searchProducts } from '../utils/searchData';
 import { categories } from '../utils/dummyData';
-import { useNavigation } from "@react-navigation/native";
-import CartScreen from "./CartScreen";
+import { adData } from '../utils/dummyData';
 
+import CarouselComponent from "../components/CarouselComponent";
 
 const HomeScreen = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [cart, setCart] = useState([]);
-  const navigation = useNavigation();
-
-  
+  const [cart, setCart] = useState<{ id: number; name: string; price: number; quantity: number }[]>([]);
+  const [cartModalVisible, setCartModalVisible] = useState(false);
 
   const handleSearch = (term) => {
     setSearchTerm(term);
@@ -33,8 +30,38 @@ const HomeScreen = () => {
   };
 
   const handleAddToCart = (product) => {
-    setCart((prevCart) => [...prevCart, product]);
+    setCart(prevCart => {
+      const existingItem = prevCart.find(item => item.id === product.id);
+      if (existingItem) {
+        return prevCart.map(item =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      } else {
+        return [...prevCart, { ...product, quantity: 1 }];
+      }
+    });
   };
+
+  const handleIncreaseQuantity = (productId) => {
+    setCart(prevCart =>
+      prevCart.map(item =>
+        item.id === productId ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
+  };
+
+  const handleDecreaseQuantity = (productId) => {
+    setCart(prevCart =>
+      prevCart
+        .map(item =>
+          item.id === productId ? { ...item, quantity: item.quantity - 1 } : item
+        )
+        .filter(item => item.quantity > 0) // Remove items with zero quantity
+    );
+  };
+
+  const getTotalItems = () => cart.reduce((sum, item) => sum + item.quantity, 0);
+  const getTotalPrice = () => cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
 
   return (
     <View style={styles.container}>
@@ -57,18 +84,15 @@ const HomeScreen = () => {
         onChangeText={handleSearch}
       />
 
-      {/* Search Results - Added ScrollView */}
+      {/* Search Results */}
       {filteredProducts.length > 0 && (
         <ScrollView style={styles.productsContainer}>
           {filteredProducts.map((product, index) => (
-            <TouchableOpacity key={index} onPress={() => handleSelectProduct(product)}>
+            <TouchableOpacity key={product.index || index} onPress={() => handleSelectProduct(product)}>
               <View style={styles.productItem}>
                 <View style={styles.productCardDetails}>
-                <Image source={{ uri: product.image }} style={styles.productImage} />
-
+                  <Image source={{ uri: product.image }} style={styles.productImage} />
                   <Text style={styles.productText}>{product.name}</Text>
-                  {/* <Text style={styles.productCardPrice}>Price: ${product.price}</Text>
-                  <Text style={styles.productCardFiber}>Fiber: {product.fiber}g</Text> */}
                 </View>
               </View>
             </TouchableOpacity>
@@ -90,18 +114,20 @@ const HomeScreen = () => {
               <Text style={styles.productCardTitle}>{selectedProduct.name}</Text>
               <Text style={styles.productCardPrice}>Price: ${selectedProduct.price}</Text>
               <Text style={styles.productCardFiber}>Fiber: {selectedProduct.fiber}g</Text>
-              <TouchableOpacity style={styles.addToCartButton} onPress={handleAddToCart}>
+              <View style={styles.BtnView}>
+              <TouchableOpacity style={styles.addToCartButton} onPress={() => handleAddToCart(selectedProduct)}>
                 <Text style={styles.addToCartText}>Add to Cart</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.closeButton} onPress={() => setSelectedProduct(null)}>
-                <Text style={styles.closeButtonText}>Close</Text>
+              <TouchableOpacity style={styles.closeButtonn} onPress={() => setSelectedProduct(null)}>
+                <Text style={styles.closeButtonTextt}>Close</Text>
               </TouchableOpacity>
+              </View>
             </View>
           </View>
         </Modal>
       )}
 
-      {/* Categories Carousel (Now below search input) */}
+      {/* Categories Carousel */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.carouselContainer}>
         {categories.map((category) => (
           <TouchableOpacity key={category.id} style={styles.categoryCard}>
@@ -111,14 +137,53 @@ const HomeScreen = () => {
         ))}
       </ScrollView>
 
-      {/* Floating Cart Button */}
-      <TouchableOpacity
-  style={styles.cartButton}
-  onPress={() => navigation.navigate('CartScreen', { cart })}
->
-  <Text style={styles.cartText}>Cart ({cart.length})</Text>
-</TouchableOpacity>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.carouselContainerr}>
+        {adData.map((category) => (
+          <TouchableOpacity key={category.id} style={styles.categoryCardd}>
+            <Image source={category.image} style={styles.categoryImagee} />
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
 
+      {/* Cart Button */}
+      <TouchableOpacity style={styles.cartButton} onPress={() => setCartModalVisible(true)}>
+        <Text style={styles.cartText}>Cart ({getTotalItems()})</Text>
+      </TouchableOpacity>
+
+      {/* Cart Modal */}
+      <Modal visible={cartModalVisible} animationType="slide" transparent={true}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.cartModal}>
+            <Text style={styles.cartModalTitle}>Your Cart</Text>
+            {cart.length === 0 ? (
+              <Text style={styles.emptyCartText}>Your cart is empty</Text>
+            ) : (
+              <>
+                {cart.map((item) => (
+                  <View key={item.id} style={styles.cartItem}>
+                    <Text style={styles.cartItemText}>{item.name} x {item.quantity}</Text>
+                    <Text style={styles.cartItemPrice}>${(item.price * item.quantity).toFixed(2)}</Text>
+                    <View style={styles.cartActions}>
+                      <TouchableOpacity onPress={() => handleDecreaseQuantity(item.id)}>
+                        <Text style={styles.quantityButton}>-</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => handleIncreaseQuantity(item.id)}>
+                        <Text style={styles.quantityButton}>+</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))}
+                <Text style={styles.totalPrice}>Total: ${getTotalPrice()}</Text>
+              </>
+            )}
+            <TouchableOpacity style={styles.closeButton} onPress={() => setCartModalVisible(false)}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* <CarouselComponent/> */}
     </View>
   );
 };
@@ -159,17 +224,23 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   productsContainer: {
-    maxHeight: 250, // Limit height for better scrolling
-    marginBottom: 10,
+    marginLeft:15,
+    backgroundColor:"#2FB4B9",
+    width:'100%',
+    borderRadius:10,
+    maxHeight: 'auto',
+    marginTop: 150,
+    position:'absolute',
+  zIndex:10,
   },
   productItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 5,
     borderRadius: 10,
-    padding: 10,
-    backgroundColor: "white",
+    padding: 5,
   },
+  
   productImage: {
     width: 40,
     height: 40,
@@ -180,8 +251,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   productText: {
-    marginLeft:15,
+    marginLeft: 15,
     fontSize: 20,
+    color:'white',
     fontWeight: 'bold',
   },
   productCardPrice: {
@@ -205,27 +277,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   productCardImage: {
-    width: 150,
+    width: 200,
     height: 150,
     borderRadius: 20,
     marginBottom: 10,
   },
   addToCartButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: 'black',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
     marginBottom: 10,
+    marginBlock:20,
+    margin:5,
   },
   addToCartText: {
     color: 'white',
     fontSize: 16,
   },
   closeButton: {
-    backgroundColor: '#f44336',
+    backgroundColor:"black",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
+    marginBottom: 10,
   },
   closeButtonText: {
     color: 'white',
@@ -240,13 +315,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  categoryCardd:{
+    width: 380,
+    height: 200,
+    marginRight:10,
+  },
+    categoryImagee: {
+      width: '100%',
+      height: 230,
+      borderRadius: 10,
+    },
   categoryImage: {
     width: 80,
-    height: 80,
+    height: 100,
     borderRadius: 10,
   },
   carouselContainer: {
-    marginTop: 10, 
+    marginTop: 10,
+  },
+  carouselContainerr: {
+
+     marginTop:-370,
+    position:'relative',
   },
   cartButton: {
     position: 'absolute',
@@ -258,13 +348,30 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     zIndex: 10,
   },
-  cartText: {
-    color: 'white',
-    fontSize: 16,
-  }
+  cartText: { color: 'white', fontSize: 16 },
+  cartModal: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: 300,
+    alignItems: 'center',
+  },
+  cartModalTitle: { fontSize: 20, fontWeight: 'bold' },
+  emptyCartText: { fontSize: 16, color: 'gray' },
+  cartItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    
+  },
+  BtnView:{ flexDirection:'row', alignItems:'center', justifyContent:'space-between'},
+  cartItemText: { fontSize: 16 },
+  cartItemPrice: { fontSize: 16, color: 'green' },
+  quantityButton: { fontSize: 20, paddingHorizontal: 10 },
+  totalPrice: { fontSize: 18, fontWeight: 'bold', marginTop: 10 },
+  closeButtonn: { marginTop: 10, backgroundColor: '#f44336', padding: 10, borderRadius: 5 },
+  closeButtonTextt: { color: 'white', fontSize: 16 },
 });
 
 export default HomeScreen;
-
-
-

@@ -18,12 +18,13 @@ export const imageData = [
 ]
 
 export const adData = [
-  require('../assets/products/c1.jpg'),
-  require('../assets/products/c2.jpg'),
-  require('../assets/products/c3.jpg'),
-  require('../assets/products/c4.jpg'),
-  require('../assets/products/c5.jpg'),
-]
+    { id: '1', image: require('../assets/products/c1.jpg') },
+    { id: '2', image: require('../assets/products/c2.jpg') },
+    { id: '3', image: require('../assets/products/c3.jpg') },
+    { id: '4', image: require('../assets/products/c4.jpg') },
+    { id: '5', image: require('../assets/products/c5.jpg') },
+  ];
+  
 
 export const productsList =
   [
