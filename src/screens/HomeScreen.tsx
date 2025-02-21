@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Modal, ScrollView } from "react-native";
 import { searchProducts } from '../utils/searchData';
@@ -23,28 +24,24 @@ const HomeScreen = () => {
     } else {
       const filtered = searchProducts.filter(product =>
         product.name.toLowerCase().includes(term.toLowerCase())
-      );
+      )
       setFilteredProducts(filtered);
     }
   };
-
   const handleSelectProduct = (product) => {
     setSelectedProduct(product);
+    setFilteredProducts([]);
+    setSearchTerm("")
   };
 
   const handleAddToCart = (product) => {
-    setCart(prevCart => {
-      const existingItem = prevCart.find(item => item.id === product.id);
-      if (existingItem) {
-        return prevCart.map(item =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      } else {
-        return [...prevCart, { ...product, quantity: 1 }];
-      }
+    setCart((prevCart) => {
+      const updatedCart = prevCart.map((item) =>
+        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+      );
+      return existingItem ? updatedCart : [...prevCart, { ...product, quantity: 1 }];
     });
   };
-
   const handleIncreaseQuantity = (productId) => {
     setCart(prevCart =>
       prevCart.map(item =>
@@ -53,13 +50,14 @@ const HomeScreen = () => {
     );
   };
 
+
   const handleDecreaseQuantity = (productId) => {
     setCart(prevCart =>
       prevCart
         .map(item =>
           item.id === productId ? { ...item, quantity: item.quantity - 1 } : item
         )
-        .filter(item => item.quantity > 0) // Remove items with zero quantity
+        .filter(item => item.quantity > 0)
     );
   };
 
@@ -72,7 +70,7 @@ const HomeScreen = () => {
       <View style={styles.delivery}>
         <View style={styles.deliverySection}>
           <Text style={styles.deliveryText}>Delivery In 12 minutes</Text>
-          <Text style={styles.positionText}>Current Position: Your location</Text>
+          <Text style={styles.positionText}> Your Location </Text>
         </View>
         <View style={styles.profileContainer}>
           <Image source={require('../assets/profle.png')} style={styles.profileIcon} />
@@ -85,6 +83,7 @@ const HomeScreen = () => {
         placeholder="Search For Products"
         placeholderTextColor="black"
         value={searchTerm}
+
         onChangeText={handleSearch}
       />
 
@@ -103,33 +102,41 @@ const HomeScreen = () => {
           ))}
         </ScrollView>
       )}
-
       {/* Modal for Selected Product */}
       {selectedProduct && (
-        <Modal
-          visible={true}
-          animationType="slide"
-          transparent={true}
-          onRequestClose={() => setSelectedProduct(null)}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.productCard}>
-              <Image source={{ uri: selectedProduct.image }} style={styles.productCardImage} />
-              <Text style={styles.productCardTitle}>{selectedProduct.name}</Text>
-              <Text style={styles.productCardPrice}>Price: ${selectedProduct.price}</Text>
-              <Text style={styles.productCardFiber}>Fiber: {selectedProduct.fiber}g</Text>
-              <View style={styles.BtnView}>
-              <TouchableOpacity style={styles.addToCartButton} onPress={() => handleAddToCart(selectedProduct)}>
-                <Text style={styles.addToCartText}>Add to Cart</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.closeButtonn} onPress={() => setSelectedProduct(null)}>
-                <Text style={styles.closeButtonTextt}>Close</Text>
-              </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
-      )}
+  <Modal
+    visible={true}
+    animationType="slide"
+    transparent={true}
+    onRequestClose={() => setSelectedProduct(null)}
+  >
+    <View style={styles.modalOverlay}>
+      <View style={styles.productCard}>
+        <Image source={{ uri: selectedProduct.image }} style={styles.productCardImage} />
+        <Text style={styles.productCardTitle}>{selectedProduct.name}</Text>
+        <Text style={styles.productCardPrice}>Price: ${selectedProduct.price}</Text>
+        {/* Buttons */}
+        <View style={styles.BtnView}>
+      
+          <TouchableOpacity style={styles.addToCartButton} onPress={() => 
+            handleAddToCart(selectedProduct) 
+            >
+            
+            <Text style={styles.addToCartText}>Add to Cart</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.closeButtonn} onPress={() => 
+            setSelectedProduct(null)
+
+            }>
+            <Text style={styles.closeButtonTextt}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  </Modal>
+)}
+
+
 
       {/* Categories Carousel */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.carouselContainer}>
@@ -169,8 +176,9 @@ const HomeScreen = () => {
                     <Text style={styles.cartItemPrice}>${(item.price * item.quantity).toFixed(2)}</Text>
                     <View style={styles.cartActions}>
                       <TouchableOpacity onPress={() => handleDecreaseQuantity(item.id)}>
-                        <Text style={styles.quantityButton}>-</Text>
+                        <Text style = {styles.quantityButton}>-</Text>
                       </TouchableOpacity>
+                      <Text>Quantity</Text>
                       <TouchableOpacity onPress={() => handleIncreaseQuantity(item.id)}>
                         <Text style={styles.quantityButton}>+</Text>
                       </TouchableOpacity>
@@ -196,15 +204,14 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#BEE3DB",
-    padding: 20,
+    padding: 10,
   },
   deliverySection: {
     marginBottom: 10,
   },
   delivery: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-between'
   },
   deliveryText: {
     fontSize: 24,
@@ -222,30 +229,34 @@ const styles = StyleSheet.create({
     height: 50,
     borderColor: 'black',
     borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 20,
     paddingLeft: 10,
     marginBottom: 10,
     backgroundColor: 'white',
     zIndex: 10,
   },
   productsContainer: {
-    marginLeft:20,
-    backgroundColor:"#2FB4B9",
+    marginLeft:10,
+    backgroundColor:"#e7dfcf",
     width:'100%',
     borderRadius:10,
-    maxHeight: 'auto',
+    maxHeight: '100%',
     marginTop: 150,
     position:'absolute',
   zIndex:10,
   },
+  cartActions:{
+    flexDirection:'row',
+  },
   productItem: {
+    backgroundColor: "#F3f0E9",
+    borderColor:"black",
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 5,
     borderRadius: 10,
     padding: 5,
   },
-  
   productImage: {
     width: 40,
     height: 40,
@@ -258,7 +269,7 @@ const styles = StyleSheet.create({
   productText: {
     marginLeft: 15,
     fontSize: 20,
-    color:'white',
+    color:'black',
     fontWeight: 'bold',
   },
   productCardPrice: {
@@ -381,3 +392,4 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
+

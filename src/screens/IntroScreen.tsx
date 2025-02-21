@@ -11,6 +11,9 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import ProductSlider from "../components/ProductSlider";
 
+// import {ExtraBold} from "../assets/fonts/Okra-ExtraBold.ttf";
+
+
 const IntroScreen = () => {
   const navigation = useNavigation();
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -53,14 +56,15 @@ const IntroScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#BEE3DB",
+    backgroundColor: "#F3f0E9",
     alignItems: "center",
     justifyContent: "center",
     paddingBottom:70,
   },
   title: {
+    fontFamily: 'Roboto',
     fontSize: 25,
-    fontWeight: "bold",
+    // fontWeight: "bold",
     marginTop: 5,
   },
   label: {
@@ -71,15 +75,15 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: "black",
-    borderRadius: 8,
+    borderRadius: 15,
     padding: 15,
     width: "80%",
     marginTop: 50,
   },
   button: {
-    backgroundColor: "green",
-    borderRadius: 8,
-    padding: 12,
+    backgroundColor: "#517c63",
+    borderRadius: 25,
+    padding: 15,
     marginTop: 20,
     width: "80%",
     alignItems: "center",
