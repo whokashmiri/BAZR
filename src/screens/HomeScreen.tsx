@@ -119,11 +119,10 @@ const HomeScreen = () => {
         <View style={styles.BtnView}>
       
           <TouchableOpacity style={styles.addToCartButton} onPress={() => 
-            handleAddToCart(selectedProduct) 
-            >
-            
+            handleAddToCart(selectedProduct)
+          }>
             <Text style={styles.addToCartText}>Add to Cart</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> 
           <TouchableOpacity style={styles.closeButtonn} onPress={() => 
             setSelectedProduct(null)
 
